@@ -30,7 +30,6 @@ package
 				
 				//Create animated sprite
 				for (var i = 0, l = 18; i < l; i++) {
-					//Add frames Runner.swf/0000 - Runner.swf/0015
 					frameName = (i >= 10? "Enemy.swf/00" : "Enemy.swf/000") + i;
 					spriteFrame = frameCache.spriteFrameByName(frameName);
 					frameList.addObject(spriteFrame);
