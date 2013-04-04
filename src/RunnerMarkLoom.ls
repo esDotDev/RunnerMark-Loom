@@ -117,9 +117,9 @@ package
 			var enemy:Enemy;
 			for(var i:int = 0; i < numEnemies; i++){
 				enemy = new Enemy(frameCache);
-				enemy.enter(batchLayer);
-				enemy.y = height - enemy.height;
-				enemy.x = width - enemy.height;
+				enemy.enter(layer);
+				enemy.y = height;
+				enemy.x = width * 1.2;
 				enemy.groundY = groundY;
 				enemyList.pushSingle(enemy);
 			}

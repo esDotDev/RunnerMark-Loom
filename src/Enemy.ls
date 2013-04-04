@@ -24,7 +24,6 @@ package
 		
 		public function Enemy(frameCache:CCSpriteFrameCache) 
 		{	
-			//Share a static animation with all enemies, no need to do this for each instance
 			if (!animation) {
 				var frameList = CCArray.array();
 				var frameName:String, spriteFrame:CCSpriteFrame;
