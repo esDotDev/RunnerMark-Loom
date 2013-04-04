@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://texturepacker.com-->
+<!-- $TexturePacker:SmartUpdate:c25b1f50976307a44a464cbfe221d283$ -->
+<!--Format:
+n  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+w  => sprite width (may be trimmed)
+h  => sprite height (may be trimmed)
+oX => sprite's x-corner offset (only available if trimmed)
+oY => sprite's y-corner offset (only available if trimmed)
+oW => sprite's original width (only available if trimmed)
+oH => sprite's original height (only available if trimmed)
+r => 'y' only set if sprite is rotated
+-->
+<TextureAtlas imagePath="RunnerMark.png" width="1024" height="1024">
+    <sprite n="Enemy.swf/0000" x="852" y="197" w="72" h="90" oX="15" oY="17" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0001" x="852" y="197" w="72" h="90" oX="15" oY="17" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0002" x="852" y="197" w="72" h="90" oX="15" oY="17" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0003" x="926" y="197" w="72" h="88" oX="15" oY="19" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0004" x="926" y="197" w="72" h="88" oX="15" oY="19" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0005" x="926" y="197" w="72" h="88" oX="15" oY="19" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0006" x="926" y="287" w="72" h="86" oX="15" oY="21" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0007" x="926" y="287" w="72" h="86" oX="15" oY="21" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0008" x="926" y="287" w="72" h="86" oX="15" oY="21" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0009" x="2" y="943" w="72" h="78" oX="15" oY="29" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0010" x="2" y="943" w="72" h="78" oX="15" oY="29" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0011" x="2" y="943" w="72" h="78" oX="15" oY="29" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0012" x="926" y="287" w="72" h="86" oX="15" oY="21" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0013" x="926" y="287" w="72" h="86" oX="15" oY="21" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0014" x="926" y="287" w="72" h="86" oX="15" oY="21" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0015" x="926" y="197" w="72" h="88" oX="15" oY="19" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0016" x="926" y="197" w="72" h="88" oX="15" oY="19" oW="100" oH="120"/>
+    <sprite n="Enemy.swf/0017" x="926" y="197" w="72" h="88" oX="15" oY="19" oW="100" oH="120"/>
+    <sprite n="Runner.swf/0000" x="56" y="775" w="56" h="130" oX="6" oY="11" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0001" x="56" y="775" w="56" h="130" oX="6" oY="11" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0002" x="852" y="289" w="68" h="132" oX="2" oY="9" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0003" x="852" y="289" w="68" h="132" oX="2" oY="9" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0004" x="852" y="289" w="68" h="132" oX="2" oY="9" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0005" x="922" y="375" w="68" h="130" oX="4" oY="11" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0006" x="922" y="375" w="68" h="130" oX="4" oY="11" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0007" x="922" y="375" w="68" h="130" oX="4" oY="11" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0008" x="18" y="641" w="56" h="132" oX="8" oY="9" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0009" x="18" y="641" w="56" h="132" oX="8" oY="9" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0010" x="18" y="641" w="56" h="132" oX="8" oY="9" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0011" x="2" y="807" w="52" h="134" oX="10" oY="7" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0012" x="2" y="807" w="52" h="134" oX="10" oY="7" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0013" x="2" y="807" w="52" h="134" oX="10" oY="7" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0014" x="18" y="507" w="62" h="132" oX="10" oY="9" oW="100" oH="150"/>
+    <sprite n="Runner.swf/0015" x="18" y="507" w="62" h="132" oX="10" oY="9" oW="100" oH="150"/>
+    <sprite n="bg1.png" x="2" y="2" w="1020" h="110"/>
+    <sprite n="bg2.png" x="2" y="114" w="1014" h="81"/>
+    <sprite n="cloud.png" x="56" y="907" w="50" h="34"/>
+    <sprite n="groundTop.png" x="520" y="197" w="330" h="97"/>
+    <sprite n="particle.png" x="1000" y="197" w="8" h="8"/>
+    <sprite n="scoreBg.png" x="18" y="197" w="500" h="300"/>
+    <sprite n="sky.png" x="2" y="197" w="14" h="608"/>
+</TextureAtlas>
