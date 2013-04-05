@@ -3,28 +3,28 @@ package
 	import cocos2d.CCAnimate;
 	import cocos2d.CCAnimation;
 	import cocos2d.CCArray;
-	import cocos2d.CCNode;
 	import cocos2d.CCPoint;
 	import cocos2d.CCSprite;
 	import cocos2d.CCSpriteFrame;
 	import cocos2d.CCSpriteFrameCache;
 	
-	public class Enemy 
+	public class Enemy extends GameObject
 	{	
+		protected static var s_width:int;
+		protected static var s_height:int;
+		
 		protected static var animation:CCAnimation;
-		public static var _width:Number;
-		public static var _height:Number;
 		
 		public var groundY:Number;
-		public var sprite:CCSprite;
 		
 		protected var velY:int = 0;
 		protected var gravity:Number = 1;
 		protected var isJumping:Boolean = false;
 		
-		public function Enemy(frameCache:CCSpriteFrameCache) 
-		{	
+		public function Enemy() {	
+			//Create the animation once and share for all Enemy instances
 			if (!animation) {
+				var frameCache = CCSpriteFrameCache.sharedSpriteFrameCache();
 				var frameList = CCArray.array();
 				var frameName:String, spriteFrame:CCSpriteFrame;
 				
@@ -34,44 +34,33 @@ package
 					spriteFrame = frameCache.spriteFrameByName(frameName);
 					frameList.addObject(spriteFrame);
 				}
+				//Cache Animation
 				animation = CCAnimation.animationWithSpriteFrames(frameList, 1 / 24);
 				animation.setLoops( -1);
 				
-				//Extract width and height of this image for later
-				_width = spriteFrame.getRectInPixels().width;
-				_height = spriteFrame.getRectInPixels().height;	
+				//Cache size
+				s_width = spriteFrame.getRectInPixels().width;
+				s_height = spriteFrame.getRectInPixels().height;
 			}
+			
+			_width = s_width;
+			_height = s_height;	
 			
 			sprite = CCSprite.create();
 			sprite.runAction(CCAnimate.create(animation));
 			sprite.setAnchorPoint(new CCPoint(0, 0));
-			
-		}
-		
-		public function get width():Number { return _width; }
-		public function get height():Number { return _height; }
-		
-		public function get x():Number { return sprite.x; }
-		public function set x(value:Number){ sprite.x = value; }
-		
-		public function get y():Number { return sprite.y; }
-		public function set y(value:Number){ sprite.y = value; }
-		
-		
-		public function enter(root:CCNode):void {
-			root.addChild(sprite);
 		}
 		
 		public function update():void {
 			velY -= gravity;
-			y += velY; 
-			if(y < groundY){
-				y = groundY;
+			sprite.y += velY; 
+			if(sprite.y < groundY){
+				sprite.y = groundY;
 				isJumping = false;
 				velY = 0;
 			}
 			
-			if(!isJumping){// && sprite.y == groundY && Math.random() < .5){
+			if(!isJumping && velY == 0 && Math.random() < .02){
 				velY = height * .25;
 				isJumping = true;
 			}

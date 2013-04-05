@@ -1,42 +1,36 @@
 package
 {
-	import cocos2d.CCAction;
-	import cocos2d.CCAnimate;
-	import cocos2d.CCAnimation;
-	import cocos2d.CCArray;
 	import cocos2d.CCNode;
 	import cocos2d.CCPoint;
+	import cocos2d.CCSprite;
 	import cocos2d.CCSpriteBatchNode;
-	import cocos2d.CCSpriteFrame;
 	import cocos2d.CCSpriteFrameCache;
 	import cocos2d.Cocos2D;
-    import cocos2d.Cocos2DGame;
-    import cocos2d.CCSprite;
-    import cocos2d.ScaleMode;
+	import cocos2d.Cocos2DGame;
 	import Loom.GameFramework.TimeManager;
-	import UI.AtlasSprite;
 
-    import UI.Label;
-	import UI.Atlas;
-
-    public class RunnerMarkLoom extends Cocos2DGame
+	
+    public class RunnerMark extends Cocos2DGame
     {
 		protected static const SPEED:Number = .33;
 		
-		public static var width:int;
-		public static var height:int;
+		public static var displayWidth:Number;
+		public static var displayHeight:Number;
 		
 		[Inject]
 		public var time:TimeManager;
 		
 		protected var fpsMeter:FpsMeter;
-		
 		protected var frameCache:CCSpriteFrameCache;
+		
+		//Layers
 		protected var batchLayer:CCSpriteBatchNode;
+		protected var enemyLayer:CCNode;
 		
 		protected var enemyList:Vector.<Enemy>
 		protected var particleList:Vector.<CCSprite>
 		
+		//Ground
 		protected var groundList:Vector.<GroundPiece>
 		protected var groundY:Number;
 		protected var lastGroundPiece:GroundPiece;
@@ -46,15 +40,11 @@ package
 		protected var hill1:ScrollingImage;
 		protected var hill2:ScrollingImage;
 		
-        override public function run():void
-        {
-            // Comment out this line to turn off automatic scaling.
-            //layer.scaleMode = ScaleMode.LETTERBOX;
-
-            super.run();
+        override public function run():void {
+			super.run();
 			
-			width = Cocos2D.getDisplayWidth();
-			height = Cocos2D.getDisplayHeight();
+			displayWidth = Cocos2D.getDisplayWidth();
+			displayHeight = Cocos2D.getDisplayHeight();
 			time.addTickedObject(this);
 			
 			//Simple class for tracking our elapsed time and current FPS
@@ -70,29 +60,32 @@ package
 			
 			//Add sky and stretch to fill stage
 			var sky = createFrameSprite("sky.png");
-			sky.setScaleX(width / sky.displayFrame().getRectInPixels().width);
+			sky.setScaleX(displayWidth / sky.displayFrame().getRectInPixels().width);
 			batchLayer.addChild(sky);
 			
 			//Add a couple of scrolling hills
-			hill1 = new ScrollingImage(frameCache, "bg1.png", width, height * .5);
+			hill1 = new ScrollingImage("bg1.png", displayWidth, displayHeight * .5);
 			hill1.enter(batchLayer);
 			
-			hill2 = new ScrollingImage(frameCache, "bg2.png", width, height * .5);
+			hill2 = new ScrollingImage("bg2.png", displayWidth, displayHeight * .5);
 			hill2.enter(batchLayer);
 			
 			//Create an initial strip of ground pieces
-			groundList = [];
 			addGround(3);
-			groundY = groundList[0].height * .9; 
+			groundY = groundList[0].height * .85; 
+			
+			//Empty layer to hold enemies
+			enemyLayer = CCNode.create();
+			layer.addChild(enemyLayer);
 			
 			//Create the "Runner" animation
-			runner = new Runner(frameCache);
-			runner.sprite.y = groundY; //Inject yPos of the ground
+			runner = new Runner();
+			runner.sprite.x = RunnerMark.displayWidth * .15;
+			runner.sprite.y = groundY;
 			runner.enter(layer);
 			
 			//Create Dust particles
 			addParticles(32);
-			
         }
 		
 		public function onTick():void {
@@ -116,10 +109,11 @@ package
 			if (!enemyList) { enemyList = []; }
 			var enemy:Enemy;
 			for(var i:int = 0; i < numEnemies; i++){
-				enemy = new Enemy(frameCache);
-				enemy.enter(layer);
-				enemy.y = height;
-				enemy.x = width * 1.2;
+				enemy = new Enemy();
+				enemy.enter(enemyLayer);
+				//enemy.enter(batchLayer); //This crashes, but I don't think it should...
+				enemy.sprite.y = displayHeight;
+				enemy.sprite.x = displayWidth * 1.2;
 				enemy.groundY = groundY;
 				enemyList.pushSingle(enemy);
 			}
@@ -130,11 +124,11 @@ package
 			var enemy:Enemy;
 			for(var i:int = enemyList.length-1; i >= 0; i--){
 				enemy = enemyList[i];
-				enemy.x -= elapsed * .33;
+				enemy.sprite.x -= elapsed * .33;
 				enemy.update();
 				//Loop to other edge of screen
-				if(enemy.x < -enemy.width){
-					enemy.x = width + 20;
+				if(enemy.sprite.x < -enemy.width){
+					enemy.sprite.x = displayWidth + 20;
 				}
 			}
 		}
@@ -144,37 +138,45 @@ package
 	 ********************************************************************************************/
 		
 		protected function addGround(numPieces:int, height:int = 0):void {
+			if (!groundList) { groundList = []; }
+			
+			//Position any new pieces at the end of the strip, if there is one.
 			var lastX:int = 0;
 			if(lastGroundPiece){
-				lastX = lastGroundPiece.x + lastGroundPiece.width - 3;
+				lastX = lastGroundPiece.sprite.x + lastGroundPiece.width - 3;
 			}
+			
 			var piece:GroundPiece;
 			for(var i = 0; i < numPieces; i++){
-				piece = new GroundPiece(frameCache);
+				piece = new GroundPiece();
 				piece.enter(batchLayer);
-				piece.x = lastX;
-				piece.y = height;
+				piece.sprite.x = lastX;
+				piece.sprite.y = height;
 				lastX += (piece.width - 3);
 				groundList.push(piece);
 			}
-			if(height == 0){ lastGroundPiece = piece; }
+			//If it's not a raised platform...
+			if (height == 0) { 
+				//Save the last ground piece so we know where to place the next one. 
+				lastGroundPiece = piece; }
 		}
 		
 		
 		protected function updateGround(elapsed:Number):void {
-			//Add platforms
+			
+			//Add raised platform?
 			if(fpsMeter.tickCount % (fpsMeter.fps > 30? 100 : 50) == 0){
-				addGround(1, height * .25 + height * .5 * Math.random());
+				addGround(1, displayHeight * .25 + displayHeight * .5 * Math.random());
 			}
+			
 			//Move Ground
 			var ground:GroundPiece;
 			for(var i = groundList.length - 1; i >= 0; i--){
 				ground = groundList[i];
-				ground.x -= elapsed * SPEED;
-				ground.x = ground.x
+				ground.sprite.x -= elapsed * SPEED;
 					
 				//Remove ground
-				if(ground.x < -ground.width * 3){
+				if(ground.sprite.x < -ground.width * 3){
 					groundList.splice(i, 1);
 					ground.exit();
 					//putSprite(ground);
@@ -184,8 +186,8 @@ package
 				}
 			}
 			//Add Ground
-			var lastX:int = (lastGroundPiece)? lastGroundPiece.x + lastGroundPiece.width : 0;
-			if(lastX < width){
+			var lastX:int = (lastGroundPiece)? lastGroundPiece.sprite.x + lastGroundPiece.width : 0;
+			if(lastX < displayWidth){
 				addGround(1, 0);
 			}
 		}
@@ -199,7 +201,7 @@ package
 			
 			for(var i = 0; i < numParticles; i++){
 				var p:CCSprite = createFrameSprite("cloud.png");
-				p.x = runner.x - 10;
+				p.x = runner.sprite.x - 10;
 				p.y = groundY + runner.height * .15  -  runner.height * .25 * Math.random();
 				//Console.print(p.y);
 				particleList.push(p);

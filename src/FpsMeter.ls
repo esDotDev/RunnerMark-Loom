@@ -28,7 +28,7 @@ package
 		protected function onTick():Void  {
 			elapsed = time.virtualTime - lastT;
 			fps = 1000 / elapsed;
-			frameFactor = fps / 60;
+			frameFactor = 60 / fps;
 			lastT = time.virtualTime;
 			tickCount++;
 		}

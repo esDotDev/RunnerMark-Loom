@@ -7,7 +7,7 @@ package
 
     static class Main extends Cocos2DApplication
     {
-        protected static var game:RunnerMarkLoom = new RunnerMarkLoom();
+        protected static var game:RunnerMark = new RunnerMark();
 
         public static function main()
         {
