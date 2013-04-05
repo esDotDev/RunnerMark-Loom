@@ -498,19 +498,6 @@
                 <key>sourceSize</key>
                 <string>{330,97}</string>
             </dict>
-            <key>particle.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{1000,197},{8,8}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{8,8}}</string>
-                <key>sourceSize</key>
-                <string>{8,8}</string>
-            </dict>
             <key>scoreBg.png</key>
             <dict>
                 <key>frame</key>
@@ -547,7 +534,7 @@
             <key>size</key>
             <string>{1024,1024}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:840b467bed23723875d39a04ebdcad9d$</string>
+            <string>$TexturePacker:SmartUpdate:bae48624622cbe0d210ce12c5b3a915f$</string>
             <key>textureFileName</key>
             <string>RunnerMark.png</string>
         </dict>

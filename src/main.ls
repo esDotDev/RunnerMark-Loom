@@ -5,6 +5,8 @@ package
 {
     import cocos2d.Cocos2DApplication;
 
+	import esdot.runnermark.*;
+	
     static class Main extends Cocos2DApplication
     {
         protected static var game:RunnerMark = new RunnerMark();

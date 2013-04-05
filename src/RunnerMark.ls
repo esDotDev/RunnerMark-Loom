@@ -1,18 +1,23 @@
-package
+package 
 {
 	import cocos2d.CCNode;
 	import cocos2d.CCPoint;
+	import cocos2d.CCSize;
 	import cocos2d.CCSprite;
 	import cocos2d.CCSpriteBatchNode;
 	import cocos2d.CCSpriteFrameCache;
+	import cocos2d.CCTextAlignment;
 	import cocos2d.Cocos2D;
 	import cocos2d.Cocos2DGame;
 	import Loom.GameFramework.TimeManager;
-
+	import UI.Atlas;
+	import UI.AtlasSprite;
+	import UI.Label;
+	
+	import esdot.runnermark.*;
 	
     public class RunnerMark extends Cocos2DGame
     {
-		protected static const SPEED:Number = .33;
 		
 		public static var displayWidth:Number;
 		public static var displayHeight:Number;
@@ -21,17 +26,20 @@ package
 		public var time:TimeManager;
 		
 		protected var fpsMeter:FpsMeter;
+		protected var speed:Number = .33;
 		protected var incrementDelay:Number = 250;
 		protected var maxIncrement:Number = 12000;
 		protected var lastIncrement:Number = 0;
-		protected var targetFPS:Number = 58;
+		protected var targetFPS:Number = 55;
 		protected var runnerScore:Number;
 		
-		protected var frameCache:CCSpriteFrameCache;
+		//
+		protected var scoreLabel:Label;
 		
 		//Layers
-		protected var batchLayer:CCSpriteBatchNode;
-		protected var enemyLayer:CCNode;
+		protected var bgLayer:CCSpriteBatchNode;
+		protected var enemyLayer:CCSpriteBatchNode;
+		protected var runnerLayer:CCSpriteBatchNode;
 		
 		protected var enemyList:Vector.<Enemy> = [];
 		protected var particleList:Vector.<CCSprite> = [];
@@ -50,6 +58,7 @@ package
         override public function run():void {
 			super.run();
 			
+			
 			displayWidth = Cocos2D.getDisplayWidth();
 			displayHeight = Cocos2D.getDisplayHeight();
 			time.addTickedObject(this);
@@ -57,59 +66,77 @@ package
 			//Simple class for tracking our elapsed time and current FPS
 			fpsMeter = new FpsMeter(time);
 			
-			//Create shared frameCache from our SpriteSheet
-			frameCache = CCSpriteFrameCache.sharedSpriteFrameCache();
-			frameCache.addSpriteFramesWithFile("assets/RunnerMark.plist", "assets/RunnerMark.png");
+			//Register/Load TextureAtlas
+			Atlas.register("RunnerMark", "assets/");
 			
-			//Create batched node for normal sprites
-			batchLayer = CCSpriteBatchNode.create("assets/RunnerMark.png", 2000);
-			layer.addChild(batchLayer);
+			//Create a few layers to hold our different game objects
+			bgLayer = CCSpriteBatchNode.create("assets/RunnerMark.png", 1000);
+			layer.addChild(bgLayer);
 			
-			//Add sky and stretch to fill stage
-			var sky = createFrameSprite("sky.png");
+			enemyLayer = CCSpriteBatchNode.create("assets/RunnerMark.png", 2000);
+			layer.addChild(enemyLayer);
+			
+			runnerLayer = CCSpriteBatchNode.create("assets/RunnerMark.png", 500);
+			layer.addChild(runnerLayer);
+			
+			//Add Bg for the Score Text
+			var scoreBg = createAtlasSprite("topBg.png");
+			scoreBg.y = displayHeight - scoreBg.displayFrame().getRectInPixels().height;
+			scoreBg.setScaleX(displayWidth / scoreBg.displayFrame().getRectInPixels().width);
+			layer.addChild(scoreBg);
+			
+			scoreLabel = new Label("assets/Curse-hd.fnt");
+			
+			scoreLabel.text = "SCORE: __";
+			scoreLabel.x = 200;
+			scoreLabel.y = displayHeight - scoreBg.displayFrame().getRectInPixels().height * .25;
+			scoreLabel.setScale(.5);
+			layer.addChild(scoreLabel);
+			
+			//Create Sky
+			var sky = createAtlasSprite("sky.png");
 			sky.setScaleX(displayWidth / sky.displayFrame().getRectInPixels().width);
-			batchLayer.addChild(sky);
+			bgLayer.addChild(sky);
 			
 			//Add a couple of scrolling hills
 			hill1 = new ScrollingImage("bg1.png", displayWidth, displayHeight * .5);
-			hill1.enter(batchLayer);
+			hill1.enter(bgLayer);
 			
 			hill2 = new ScrollingImage("bg2.png", displayWidth, displayHeight * .5);
-			hill2.enter(batchLayer);
+			hill2.enter(bgLayer);
 			
 			//Create an initial strip of ground pieces
 			addGround(3);
 			groundY = groundList[0].height * .85; 
 			
-			//Empty layer to hold enemies
-			enemyLayer = CCNode.create();
-			layer.addChild(enemyLayer);
-			
 			//Create the "Runner" animation
 			runner = new Runner();
 			runner.sprite.x = RunnerMark.displayWidth * .15;
 			runner.sprite.y = groundY;
-			runner.enter(layer);
+			runner.enter(runnerLayer);
 			
 			//Create Dust particles
 			addParticles(32);
 			
-			addEnemies(1000);
         }
 		
 		public function onTick():void {
 			hill1.scroll(1 * fpsMeter.frameFactor);
 			hill2.scroll(2 * fpsMeter.frameFactor);
 			
+			runner.update(fpsMeter.elapsed);
 			updateGround(fpsMeter.elapsed);
 			updateParticles(fpsMeter.elapsed);
 			updateEnemies(fpsMeter.elapsed);
 			
 			//Get Score
 			if(enemyList.length > 0){
-				runnerScore = targetFPS * 10 + enemyList.length;
+				runnerScore = Math.round(targetFPS * 10 + enemyList.length);
 			} else {
-				runnerScore = fpsMeter.fps * 10;
+				runnerScore = Math.round(fpsMeter.fps * 10);
+			}
+			if (fpsMeter.tickCount % 60 == 0) {
+				scoreLabel.text = "score: " + runnerScore;
 			}
 			
 			//Check whether to add more enemies, or end test.
@@ -119,13 +146,36 @@ package
 				lastIncrement = fpsMeter.totalTime;
 			} 
 			else if(increment > maxIncrement){
-				//Test is Complete!
-				//if(onComplete){ onComplete(); }
-				//stopEngine();
-				trace("TEST COMPLETE:" + runnerScore);
-				time.removeTickedObject(this);
+				showTestComplete();
 			}
 			
+		}
+		
+		protected function showTestComplete() {
+			time.removeTickedObject(this);
+			
+			var popUp = createAtlasSprite("scoreBg.png");
+			popUp.setAnchorPoint(new CCPoint(.5, .5));
+			popUp.x = displayWidth >> 1;
+			popUp.y = displayHeight >> 1;
+			layer.addChild(popUp);
+			
+			var results = new Label("assets/Curse-hd.fnt");
+			results.text = "Score: " + runnerScore;
+			results.x = displayWidth >> 1;
+			results.y = displayHeight >> 1;
+			layer.addChild(results);
+			
+			layer.onTouchEnded += function() {
+				enemyLayer.removeAllChildrenWithCleanup(true);
+				enemyList.length = 0;
+				
+				layer.onTouchEnded = null;
+				layer.removeChild(popUp);
+				layer.removeChild(results);
+				
+				time.addTickedObject(this);
+			}
 		}
 		
 	/********************************************************************************************
@@ -136,9 +186,9 @@ package
 			for(var i:int = 0; i < numEnemies; i++){
 				enemy = new Enemy();
 				enemy.enter(enemyLayer);
-				//enemy.enter(batchLayer); //This crashes, but I don't think it should...
+				//enemy.enter(bgLayer); //This crashes, but I don't think it should...
 				enemy.sprite.y = displayHeight;
-				enemy.sprite.x = displayWidth * 1.2;
+				enemy.sprite.x = displayWidth;
 				enemy.groundY = groundY;
 				enemyList.pushSingle(enemy);
 			}
@@ -149,7 +199,7 @@ package
 			for(var i:int = enemyList.length-1; i >= 0; i--){
 				enemy = enemyList[i];
 				enemy.sprite.x -= elapsed * .33;
-				enemy.update();
+				enemy.update(elapsed);
 				//Loop to other edge of screen
 				if(enemy.sprite.x < -enemy.width){
 					enemy.sprite.x = displayWidth + 20;
@@ -175,7 +225,7 @@ package
 					piece = groundPool.pop() as GroundPiece;
 				}else {
 					piece = new GroundPiece();
-					piece.enter(batchLayer);
+					piece.enter(bgLayer);
 				}
 				piece.sprite.x = lastX;
 				piece.sprite.y = height;
@@ -200,7 +250,7 @@ package
 			var ground:GroundPiece;
 			for(var i = groundList.length - 1; i >= 0; i--){
 				ground = groundList[i];
-				ground.sprite.x -= elapsed * SPEED;
+				ground.sprite.x -= elapsed * speed;
 					
 				//Remove ground
 				if(ground.sprite.x < -ground.width * 3){
@@ -221,13 +271,13 @@ package
 
 		protected function addParticles(numParticles:int):void {
 			for(var i = 0; i < numParticles; i++){
-				var p:CCSprite = createFrameSprite("cloud.png");
+				var p:AtlasSprite = createAtlasSprite("cloud.png");
 				p.x = runner.sprite.x - 10;
 				p.y = groundY + runner.height * .15  -  runner.height * .25 * Math.random();
-				//Console.print(p.y);
 				particleList.push(p);
-				batchLayer.addChild(p);
+				runnerLayer.addChild(p);
 			}
+			runnerLayer.reorderChild(runner.sprite, particleList.length);
 		}
 		
 		protected function updateParticles(elapsed:Number):void {
@@ -238,7 +288,7 @@ package
 			var p:CCSprite;
 			for(var i:int = particleList.length-1; i >= 0; i--){
 				p = particleList[i];
-				p.x -= elapsed * SPEED * .5;
+				p.x -= elapsed * speed * .5;
 				p.setOpacity(p.getOpacity() * .95);
 				p.setScale(p.getScale() - .02);
 				//Remove Particle
@@ -252,12 +302,14 @@ package
 	/********************************************************************************************
 	 * MISC
 	 ********************************************************************************************/
-		public function createFrameSprite(texture:String, topLeft:Boolean = true):CCSprite {
-			var s = CCSprite.createWithSpriteFrame(frameCache.spriteFrameByName(texture));
-			if(topLeft){
-				s.setAnchorPoint(new CCPoint(0, 0));
-			}
+		public static function createAtlasSprite(texture:String):AtlasSprite  {
+			var s = new AtlasSprite();
+			s.atlasID = "RunnerMark";
+			s.texture = texture;
+			s.setAnchorPoint(new CCPoint(0, 0));
 			return s;
 		}
+		
+		
     }
 }

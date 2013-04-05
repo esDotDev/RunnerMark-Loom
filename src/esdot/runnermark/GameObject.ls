@@ -1,11 +1,12 @@
-package  
+package esdot.runnermark
 {
 	import cocos2d.CCSprite;
 	import cocos2d.CCNode;
+	import UI.AtlasSprite;
 	
 	public class GameObject 
 	{
-		public var sprite:CCSprite;
+		public var sprite:AtlasSprite;
 		
 		protected var parent:CCNode;
 		protected var _width:Number;

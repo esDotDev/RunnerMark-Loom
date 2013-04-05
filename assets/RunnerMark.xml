@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://texturepacker.com-->
-<!-- $TexturePacker:SmartUpdate:c25b1f50976307a44a464cbfe221d283$ -->
+<!-- $TexturePacker:SmartUpdate:e81e8e8ddd63f1cdfffa542aacb3668e$ -->
 <!--Format:
 n  => name of the sprite
 x  => sprite x pos in texture
@@ -52,7 +52,7 @@ r => 'y' only set if sprite is rotated
     <sprite n="bg2.png" x="2" y="114" w="1014" h="81"/>
     <sprite n="cloud.png" x="56" y="907" w="50" h="34"/>
     <sprite n="groundTop.png" x="520" y="197" w="330" h="97"/>
-    <sprite n="particle.png" x="1000" y="197" w="8" h="8"/>
     <sprite n="scoreBg.png" x="18" y="197" w="500" h="300"/>
     <sprite n="sky.png" x="2" y="197" w="14" h="608"/>
+    <sprite n="topBg.png" x="76" y="943" w="515" h="50"/>
 </TextureAtlas>

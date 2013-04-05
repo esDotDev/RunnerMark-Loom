@@ -1,4 +1,4 @@
-package  
+package esdot.runnermark  
 {
 	import cocos2d.CCLayer;
 	import cocos2d.CCNode;
@@ -9,6 +9,7 @@ package
 	
 	public class ScrollingImage
 	{
+		public var atlasId:String = "RunnerMark";
 		
 		protected var viewWidth:Number;
 		protected var viewHeight:Number;
@@ -29,8 +30,9 @@ package
 			viewWidth = width;
 			viewHeight = height;
 			
-			var frameCache = CCSpriteFrameCache.sharedSpriteFrameCache();
-			var s = CCSprite.createWithSpriteFrame(frameCache.spriteFrameByName(imageName));
+			var s = new AtlasSprite();
+			s.atlasID = atlasId;
+			s.texture = imageName;
 			
 			//Cache the image sizes and calculate the scale to fill the viewHeight.
 			imageWidth = s.displayFrame().getRectInPixels().width;
@@ -41,7 +43,9 @@ package
 			images = [];
 			var numImages = Math.ceil((viewWidth + imageWidth) / imageWidth);
 			for (var i = 0; i < numImages; i++) {
-				s = CCSprite.createWithSpriteFrame(frameCache.spriteFrameByName(imageName));
+				s = new AtlasSprite();
+				s.atlasID = atlasId;
+				s.texture = imageName;
 				s.setAnchorPoint(new CCPoint(0, 0));
 				s.retain();
 				s.x = imageWidth * i * imageScale;

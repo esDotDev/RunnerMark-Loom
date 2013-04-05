@@ -20,7 +20,7 @@
         <key>dpi</key>
         <uint>72</uint>
         <key>dataFormat</key>
-        <string>cocos2d</string>
+        <string>xml</string>
         <key>textureFileName</key>
         <filename>RunnerMark.png</filename>
         <key>flipPVR</key>
@@ -111,7 +111,7 @@
             <enum type="AndEngine::MagFilter">MagLinear</enum>
         </struct>
         <key>dataFileName</key>
-        <filename>RunnerMark.plist</filename>
+        <filename>RunnerMark.xml</filename>
         <key>mainExtension</key>
         <string></string>
         <key>forceIdenticalLayout</key>
@@ -141,16 +141,9 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>bg1.png</filename>
-            <filename>bg2.png</filename>
-            <filename>groundTop.png</filename>
-            <filename>Runner.swf</filename>
-            <filename>particle.png</filename>
-            <filename>Runner.swf</filename>
+            <filename>bitmaps</filename>
             <filename>Enemy.swf</filename>
-            <filename>cloud.png</filename>
-            <filename>scoreBg.png</filename>
-            <filename>sky.png</filename>
+            <filename>Runner.swf</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

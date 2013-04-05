@@ -1,16 +1,17 @@
-package  
+package esdot.runnermark 
 {
 	import cocos2d.CCPoint;
 	import cocos2d.CCSprite;
 	import cocos2d.CCSpriteFrameCache;
+	import UI.AtlasSprite;
+	
+	import RunnerMark;
 	
 	public class GroundPiece extends GameObject
 	{	
 		public function GroundPiece() {	
 			
-			var frameCache = CCSpriteFrameCache.sharedSpriteFrameCache();
-			sprite = CCSprite.createWithSpriteFrame(frameCache.spriteFrameByName("groundTop.png"));
-			sprite.setAnchorPoint(new CCPoint(0, 0));
+			sprite = RunnerMark.createAtlasSprite("groundTop.png");
 			
 			_width = sprite.displayFrame().getRectInPixels().width;
 			_height = sprite.displayFrame().getRectInPixels().height;
