@@ -45,9 +45,6 @@ package esdot.runnermark
 				_currentFrame++;
 				frameElapsed -= frameMs;
 			}
-			if (_currentFrame > frames.length - 1) {
-				_currentFrame = 0;
-			}
 			renderFrame();
 		}
 		

@@ -19,7 +19,7 @@ package esdot.runnermark
 		public function Runner() {	
 			
 			//Create an AtlasMovieClip
-			var frameLabels:Vector.<String> = new Vector.<String>();
+			var frameLabels:Vector.<String> = [];
 			for (var i = 0, l = 16; i < l; i++) {
 				frameLabels.pushSingle((i >= 10? "Runner.swf/00" : "Runner.swf/000") + i);
 			}

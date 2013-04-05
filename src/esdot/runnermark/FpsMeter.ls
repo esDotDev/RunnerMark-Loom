@@ -22,6 +22,14 @@ package esdot.runnermark
 			lastT = time.platformTime;
 		}
 		
+		public function reset() {
+			totalTime = 0;
+			tickCount = 0;
+			lastT = time.platformTime;
+			frameCount = 0;
+			fps = 20;
+		}
+		
 		protected function onTick():Void  {
 			
 			elapsed = time.platformTime - lastT;

@@ -174,6 +174,7 @@ package
 				layer.removeChild(popUp);
 				layer.removeChild(results);
 				
+				fpsMeter.reset();
 				time.addTickedObject(this);
 			}
 		}
