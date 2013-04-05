@@ -30,7 +30,7 @@ package
 		protected var incrementDelay:Number = 250;
 		protected var maxIncrement:Number = 12000;
 		protected var lastIncrement:Number = 0;
-		protected var targetFPS:Number = 55;
+		protected var targetFPS:Number = 58;
 		protected var runnerScore:Number;
 		
 		//
