@@ -25,6 +25,7 @@ package
 		protected var maxIncrement:Number = 12000;
 		protected var lastIncrement:Number = 0;
 		protected var targetFPS:Number = 58;
+		protected var runnerScore:Number;
 		
 		protected var frameCache:CCSpriteFrameCache;
 		
@@ -92,6 +93,8 @@ package
 			
 			//Create Dust particles
 			addParticles(32);
+			
+			addEnemies(1000);
         }
 		
 		public function onTick():void {
@@ -102,8 +105,15 @@ package
 			updateParticles(fpsMeter.elapsed);
 			updateEnemies(fpsMeter.elapsed);
 			
-			var increment:Number = fpsMeter.totalTime - lastIncrement;
+			//Get Score
+			if(enemyList.length > 0){
+				runnerScore = targetFPS * 10 + enemyList.length;
+			} else {
+				runnerScore = fpsMeter.fps * 10;
+			}
 			
+			//Check whether to add more enemies, or end test.
+			var increment:Number = fpsMeter.totalTime - lastIncrement;
 			if(fpsMeter.fps >= targetFPS && increment > incrementDelay){
 				addEnemies(1 + Math.floor(enemyList.length/50));
 				lastIncrement = fpsMeter.totalTime;
@@ -112,7 +122,7 @@ package
 				//Test is Complete!
 				//if(onComplete){ onComplete(); }
 				//stopEngine();
-				trace("TEST COMPLETE");
+				trace("TEST COMPLETE:" + runnerScore);
 				time.removeTickedObject(this);
 			}
 			
@@ -230,14 +240,11 @@ package
 				p = particleList[i];
 				p.x -= elapsed * SPEED * .5;
 				p.setOpacity(p.getOpacity() * .95);
-				
 				p.setScale(p.getScale() - .02);
 				//Remove Particle
 				if(p.getOpacity() <= 20 || p.getScale() <= 0){
 					particleList.splice(i, 1);
-					if(p.getParent()){
-						p.getParent().removeChild(p);
-					}
+					p.removeFromParentAndCleanup();
 				}
 			}
 		}
