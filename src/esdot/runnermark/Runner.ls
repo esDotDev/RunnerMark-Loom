@@ -15,6 +15,13 @@ package esdot.runnermark
 	public class Runner extends GameObject 
 	{	
 		protected var movieClip:AtlasAnimation;
+		protected var velY:int = 0;
+		protected var gravity:Number = 1;
+		protected var isJumping:Boolean = false;
+		
+		public var enemyList:Vector.<Enemy>
+		public var groundY:Number;
+		
 		
 		public function Runner() {	
 			
@@ -33,6 +40,25 @@ package esdot.runnermark
 		
 		public function update(elapsed:Number):Void {
 			movieClip.update(elapsed);
+			
+			velY -= gravity;
+			sprite.y += velY; 
+			if(sprite.y < groundY){
+				sprite.y = groundY;
+				isJumping = false;
+				velY = 0;
+			}
+			
+			if(!enemyList || isJumping){ return; }
+			var enemy:Enemy;
+			for(var i:int = 0, l:int = enemyList.length; i < l; i++){
+				enemy = enemyList[i];
+				if(enemy.sprite.x > this.sprite.x && enemy.sprite.x - this.sprite.x < this.width * 1.5){
+					velY = 22;
+					isJumping = true;
+					break;
+				}
+			}
 		}
 		
 		

@@ -30,7 +30,7 @@ package
 		protected var incrementDelay:Number = 250;
 		protected var maxIncrement:Number = 12000;
 		protected var lastIncrement:Number = 0;
-		protected var targetFPS:Number = 58;
+		protected var targetFPS:Number = 55;
 		protected var runnerScore:Number;
 		
 		//
@@ -111,6 +111,8 @@ package
 			
 			//Create the "Runner" animation
 			runner = new Runner();
+			runner.groundY = groundY;
+			runner.enemyList = enemyList;
 			runner.sprite.x = RunnerMark.displayWidth * .15;
 			runner.sprite.y = groundY;
 			runner.enter(runnerLayer);
@@ -274,7 +276,7 @@ package
 			for(var i = 0; i < numParticles; i++){
 				var p:AtlasSprite = createAtlasSprite("cloud.png");
 				p.x = runner.sprite.x - 10;
-				p.y = groundY + runner.height * .15  -  runner.height * .25 * Math.random();
+				p.y = runner.sprite.y + runner.height * .15  -  runner.height * .25 * Math.random();
 				particleList.push(p);
 				runnerLayer.addChild(p);
 			}
