@@ -21,17 +21,23 @@ package
 		public var time:TimeManager;
 		
 		protected var fpsMeter:FpsMeter;
+		protected var incrementDelay:Number = 250;
+		protected var maxIncrement:Number = 12000;
+		protected var lastIncrement:Number = 0;
+		protected var targetFPS:Number = 58;
+		
 		protected var frameCache:CCSpriteFrameCache;
 		
 		//Layers
 		protected var batchLayer:CCSpriteBatchNode;
 		protected var enemyLayer:CCNode;
 		
-		protected var enemyList:Vector.<Enemy>
-		protected var particleList:Vector.<CCSprite>
+		protected var enemyList:Vector.<Enemy> = [];
+		protected var particleList:Vector.<CCSprite> = [];
 		
 		//Ground
-		protected var groundList:Vector.<GroundPiece>
+		protected var groundPool:Vector.<GroundPiece> = [];
+		protected var groundList:Vector.<GroundPiece> = [];
 		protected var groundY:Number;
 		protected var lastGroundPiece:GroundPiece;
 		
@@ -96,8 +102,18 @@ package
 			updateParticles(fpsMeter.elapsed);
 			updateEnemies(fpsMeter.elapsed);
 			
-			if (fpsMeter.tickCount % 10 == 0) {
-				addEnemies(1);
+			var increment:Number = fpsMeter.totalTime - lastIncrement;
+			
+			if(fpsMeter.fps >= targetFPS && increment > incrementDelay){
+				addEnemies(1 + Math.floor(enemyList.length/50));
+				lastIncrement = fpsMeter.totalTime;
+			} 
+			else if(increment > maxIncrement){
+				//Test is Complete!
+				//if(onComplete){ onComplete(); }
+				//stopEngine();
+				trace("TEST COMPLETE");
+				time.removeTickedObject(this);
 			}
 			
 		}
@@ -106,7 +122,6 @@ package
 	 * ENEMIES
 	 ********************************************************************************************/
 		public function addEnemies(numEnemies:int = 1):void {
-			if (!enemyList) { enemyList = []; }
 			var enemy:Enemy;
 			for(var i:int = 0; i < numEnemies; i++){
 				enemy = new Enemy();
@@ -120,7 +135,6 @@ package
 		}
 		
 		protected function updateEnemies(elapsed:Number):void { 
-			if (!enemyList) { return; }
 			var enemy:Enemy;
 			for(var i:int = enemyList.length-1; i >= 0; i--){
 				enemy = enemyList[i];
@@ -138,8 +152,6 @@ package
 	 ********************************************************************************************/
 		
 		protected function addGround(numPieces:int, height:int = 0):void {
-			if (!groundList) { groundList = []; }
-			
 			//Position any new pieces at the end of the strip, if there is one.
 			var lastX:int = 0;
 			if(lastGroundPiece){
@@ -147,9 +159,14 @@ package
 			}
 			
 			var piece:GroundPiece;
-			for(var i = 0; i < numPieces; i++){
-				piece = new GroundPiece();
-				piece.enter(batchLayer);
+			for (var i = 0; i < numPieces; i++) {
+				//Use a pooled piece if there's one available...
+				if (groundPool.length > 0) {
+					piece = groundPool.pop() as GroundPiece;
+				}else {
+					piece = new GroundPiece();
+					piece.enter(batchLayer);
+				}
 				piece.sprite.x = lastX;
 				piece.sprite.y = height;
 				lastX += (piece.width - 3);
@@ -178,11 +195,7 @@ package
 				//Remove ground
 				if(ground.sprite.x < -ground.width * 3){
 					groundList.splice(i, 1);
-					ground.exit();
-					//putSprite(ground);
-					//if(ground.display.parent){
-						//ground.display.parent.removeChild(ground.display);
-					//}
+					groundPool.pushSingle(ground);
 				}
 			}
 			//Add Ground
@@ -197,8 +210,6 @@ package
 	 ********************************************************************************************/
 
 		protected function addParticles(numParticles:int):void {
-			if(!particleList){ particleList = []; }
-			
 			for(var i = 0; i < numParticles; i++){
 				var p:CCSprite = createFrameSprite("cloud.png");
 				p.x = runner.sprite.x - 10;

@@ -20,13 +20,7 @@ package
 			this.parent = parent;
 			if (sprite) { parent.addChild(sprite); }
 		}
-		
-		public function exit():void {
-			if(sprite && sprite.getParent()){
-				parent.removeChild(sprite);
-			}
-			parent = sprite = null;
-		}
+	
 	}
 	
 }
