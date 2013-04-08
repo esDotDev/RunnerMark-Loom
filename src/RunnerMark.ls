@@ -70,13 +70,13 @@ package
 			Atlas.register("RunnerMark", "assets/");
 			
 			//Create a few layers to hold our different game objects
-			bgLayer = CCSpriteBatchNode.create("assets/RunnerMark.png", 1000);
+			bgLayer = CCSpriteBatchNode.create("assets/RunnerMark.png", 50);
 			layer.addChild(bgLayer);
 			
 			enemyLayer = CCSpriteBatchNode.create("assets/RunnerMark.png", 2000);
 			layer.addChild(enemyLayer);
 			
-			runnerLayer = CCSpriteBatchNode.create("assets/RunnerMark.png", 500);
+			runnerLayer = CCSpriteBatchNode.create("assets/RunnerMark.png", 100);
 			layer.addChild(runnerLayer);
 			
 			//Add Bg for the Score Text
@@ -189,7 +189,6 @@ package
 			for(var i:int = 0; i < numEnemies; i++){
 				enemy = new Enemy();
 				enemy.enter(enemyLayer);
-				//enemy.enter(bgLayer); //This crashes, but I don't think it should...
 				enemy.sprite.y = displayHeight;
 				enemy.sprite.x = displayWidth;
 				enemy.groundY = groundY;
@@ -245,7 +244,7 @@ package
 		protected function updateGround(elapsed:Number):void {
 			
 			//Add raised platform?
-			if(fpsMeter.tickCount % (fpsMeter.fps > 30? 100 : 50) == 0){
+			if(fpsMeter.tickCount % 100 == 0){
 				addGround(1, displayHeight * .25 + displayHeight * .5 * Math.random());
 			}
 			
